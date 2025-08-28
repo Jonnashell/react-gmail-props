@@ -4,14 +4,20 @@ import initialEmails from './data/emails'
 
 import './styles/App.css'
 
+import Emails from './components/emails'
+import OpenEmail from './components/openEmail'
+
 const getReadEmails = emails => emails.filter(email => !email.read)
 
 const getStarredEmails = emails => emails.filter(email => email.starred)
+
+
 
 function App() {
   const [emails, setEmails] = useState(initialEmails)
   const [hideRead, setHideRead] = useState(false)
   const [currentTab, setCurrentTab] = useState('inbox')
+  const [selected, setSelected] = useState(null);
 
   const unreadEmails = emails.filter(email => !email.read)
   const starredEmails = emails.filter(email => email.starred)
@@ -88,33 +94,16 @@ function App() {
         </ul>
       </nav>
       <main className="emails">
-        <ul>
-          {filteredEmails.map((email, index) => (
-            <li
-              key={index}
-              className={`email ${email.read ? 'read' : 'unread'}`}
-            >
-              <div className="select">
-                <input
-                  className="select-checkbox"
-                  type="checkbox"
-                  checked={email.read}
-                  onChange={() => toggleRead(email)}
-                />
-              </div>
-              <div className="star">
-                <input
-                  className="star-checkbox"
-                  type="checkbox"
-                  checked={email.starred}
-                  onChange={() => toggleStar(email)}
-                />
-              </div>
-              <div className="sender">{email.sender}</div>
-              <div className="title">{email.title}</div>
-            </li>
-          ))}
-        </ul>
+        {selected ? (
+            <OpenEmail email={selected} setSelected={setSelected} />
+        ) : (
+        <Emails
+          filteredEmails={filteredEmails}
+          toggleStar={toggleStar}
+          toggleRead={toggleRead}
+          setSelected={setSelected}
+        />
+        )}
       </main>
     </div>
   )
